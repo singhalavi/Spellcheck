@@ -1,0 +1,2 @@
+# Module org.vaadin.spellcheck.SpellCheckWidgetset
+# RPC service class, partial path of RPC policy file
