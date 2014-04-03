@@ -23,6 +23,7 @@ import com.vaadin.ui.TextField;
 public class SpellCheck  implements SpellCheckListener{
 	private static String defaultDicFile = "/dict/english.0";
 	private SpellChecker spellChecker = null;
+	private static SpellDictionary defaultDictionary = null;
 	
 	public SpellCheck() throws FileNotFoundException, IOException, URISyntaxException {
 		spellChecker = new SpellChecker(getDefaultDictionary());
@@ -78,10 +79,18 @@ public class SpellCheck  implements SpellCheckListener{
 	}
 	
 	private SpellDictionary getDefaultDictionary() throws FileNotFoundException, IOException, URISyntaxException{
-		InputStream is = SpellCheck.class.getResourceAsStream(defaultDicFile);
-		SpellDictionary dictionary;
-		dictionary = new SpellDictionaryHashMap(new InputStreamReader(is));
-		return dictionary;
+		if(defaultDictionary == null){
+			synchronized (defaultDicFile) {
+				if(defaultDictionary == null)
+				{
+					InputStream is = SpellCheck.class.getResourceAsStream(defaultDicFile);
+					SpellDictionary dictionary;
+					dictionary = new SpellDictionaryHashMap(new InputStreamReader(is));
+					defaultDictionary =  dictionary;
+				}
+			}
+		}
+		return defaultDictionary;
 	}
 
 	public SpellChecker getSpellChecker() {
